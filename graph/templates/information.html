@@ -1,0 +1,28 @@
+<!--Created on July 30 2022-->
+<!--@author: Li,Ruijun-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Information</title>
+    <link rel="icon" href="{% static 'image/home.png' %}" sizes="16x16" type="image/png">
+</head>
+<body>
+<a style="display: inline" href="http://42.194.205.96:8000/graph/logd"><nobr><img src="{% static 'image/home.png' %}" width="50" alt="home page"></nobr></a>
+<!--<a style="display: inline" href="http://127.0.0.1:8000/graph/graph_page"><nobr><img src="{% static 'image/home.png' %}" width="50" alt="home page"></nobr></a>-->
+<h1 style="display: inline">{{node_detail.name}}</h1>
+<hr />
+<h3>Description</h3>
+<p>{{node_detail.description}}</p>
+<hr />
+<h3>source</h3>
+<a href={{node_detail.url}} target="_blank">{{node_detail.url}}</a>
+<hr />
+<h3>Links to</h3>
+{% for l in Links01 %}
+    <a href={{l.url}}>{{ l.url }}</a>
+    <br />
+{% endfor %}
+</body>
+</html>

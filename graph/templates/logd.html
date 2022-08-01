@@ -1,0 +1,214 @@
+<!--Created on July 30 2022-->
+<!--@author: Li,Ruijun-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Li Ruijun">
+  <meta name="description" content="The Linked Open Government Datasets Cloud Diagram">
+  <title>The Linked Open Government Datasets Cloud</title>
+  <link rel="icon" href="{% static 'image/home.png' %}" sizes="16x16" type="image/png">
+</head>
+<body style="height: 100%;width: 90%; margin: 0 auto">
+  <div id="container" style="height: 100%"></div>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="{% static 'js/echarts.js' %}"/></script>
+
+
+  <script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+    // var ROOT_PATH = 'https://fastly.jsdelivr.net/gh/apache/echarts-website@asf-site/examples';
+    var ROOT_PATH = "{% static 'data/' %}"
+    var option;
+    var categories = [{name:'Economy_And_Finance'}, {name:'Education_Culture_And_Sport'}, {name:'Energy'}, {name:'Environment'}, {name:'Government'}, {name:'Health'}];
+    myChart.showLoading();
+$.getJSON(
+  // ROOT_PATH + '/data/asset/data/npmdepgraph.min10.json',
+  ROOT_PATH + 'data_europa_220729.json',
+  function (json) {
+    myChart.hideLoading();
+    myChart.setOption(
+      (option = {
+        title: {
+          text: 'The Linked Open Government Datasets Cloud',
+         left: 'center',
+          top: 15,
+          textStyle: {
+            fontSize: 30,
+            fontWeight: 'lighter'
+          }
+        },
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        legend: [{
+            type:'scroll',
+            orient: 'horizontal',
+            left: 'center',
+            top: 55,
+            bottom: 20,
+            itemWidth: 50,
+            itemHeight: 50,
+            // selectedMode: 'single',
+            // data: categories.map(function (a) {
+            //     return a.name;
+            // })
+          data:[
+        {
+            name:'Economy_And_Finance',
+            textStyle:{
+                fontSize:12,
+                fontWeight:'bolder',
+                color:'#FF5809'
+            },
+            icon:"image://{% static 'image/ic-1-removebg-preview.png' %}",
+            itemHeight: 100,//Height of legend Icon
+        },
+        {
+            name:'Energy',
+            textStyle:{
+                fontSize:12,
+                fontWeight:'bolder',
+                color:'#921AFF'
+            },
+            icon:"image://{% static 'image/ic-2-removebg-preview.png' %}"
+        },
+        {
+            name:'Education_Culture_And_Sport',
+            textStyle:{
+                fontSize:12,
+                fontWeight:'bolder',
+                color:'#0080FF'
+            },
+            icon:"image://{% static 'image/ic-3-removebg-preview.png' %}"
+        },
+        {
+            name:'Government',
+            textStyle:{
+                fontSize:12,
+                fontWeight:'bolder',
+                color:'#FF0000'
+            },
+            icon:"image://{% static 'image/ic-4-removebg-preview.png' %}"
+        },
+        {
+            name:'Environment',
+            textStyle:{
+                fontSize:12,
+                fontWeight:'bolder',
+                color:'#00A600'
+            },
+            icon:"image://{% static 'image/ic-5-removebg-preview.png' %}"
+        },
+        {
+            name:'Health',
+            textStyle:{
+                fontSize:12,
+                fontWeight:'bolder',
+                color:'#FF359A'
+            },
+            icon:"image://{% static 'image/ic-6-removebg-preview.png' %}"
+        }
+    ]
+        }],
+        series: [
+          {
+            type: 'graph',
+            layout: 'none',
+            lineStyle: {
+              width: 0.1,
+              curveness: Math.random()/3,
+              opacity: 1
+            },
+            // progressiveThreshold: 700,
+            data: json.nodes.map(function (node) {
+              return {
+                x: node.x,
+                y: node.y,
+                name: node.name,
+                category: node.category,
+                symbolSize: node.size,
+                itemStyle: {
+                  color: node.color
+                }
+              };
+            }),
+            edges: json.edges.map(function (edge) {
+              return {
+                source: edge.source,
+                target: edge.target
+              };
+            }),
+            categories: categories,
+            emphasis: {
+              focus: 'adjacency',
+              label: {
+                position: 'right',
+                show: true
+              }
+            },
+            roam: true
+          }
+        ]
+      }),
+      true
+    );
+  }
+);
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+    myChart.on('click', function(params) {
+      if (params.name.split('-')[1].length <=4){
+      window.open('https://42.194.205.96:8000/graph/information/' + encodeURIComponent(params.name.split('-')[1]));
+      }
+  });
+  </script>
+  <section class="more" id="about">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <h1>About the diagram</h1>
+          <p style="clear:right"><span about="#cloud" property="dc:description" datatype="">
+        This web page is the home of the <em>LOGD cloud diagram</em>.
+        This image shows datasets that have been published in the
+        <a href="https://data.europa.eu/en">data.europa.eu</a> format.</span></p>
+
+          <p>The dataset currently contains <b>4311</b> datasets with <b>6322</b> links (as of July 2022)</p>
+
+          <p>This project builds a basic knowledge map visualization system for the government's public data set, and presents the data node map and information online, so as to realize the most basic knowledge map framework. The knowledge atlas constructed by this project shows the structured knowledge sorted out by classification to users through semantic retrieval in combination with the graphical method of nodes and edges, so as to organize the government open data sets into usable knowledge at the minimum cost. In the future, the intelligent question answering robot can be connected through the interface to create a smart government and assist the government in making decisions.</p>
+
+          <h3>Maintainers</h3>
+          <p>The diagram is maintained by <span rel="dc:creator">Li Ruijun
+        </span> of <a href="https://www.kcl.ac.uk/">King's College London</a>.
+
+
+          <h3>Data and code</h3>
+
+          The raw data is available <a href="{% static 'data/data_europa_220729.json' %}">here</a>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <!-- Footer -->
+    <footer class="footer bg-light">
+      <div class="container">
+        <div class="row">
+            <div class="col-lg-7"></div>
+            <div class="col-lg-5">
+      <a href=""><img src="{% static 'image/home.png' %}" alt="LOGD cloud diagram" style="left:300px;height:40px;" /></a>
+    </div>
+       </div>
+      </div>
+    </footer>
+</body>
+</html>
